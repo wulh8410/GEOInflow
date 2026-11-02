@@ -19,6 +19,17 @@ function getDefaultProtocol(host?: string) {
 }
 
 export function getBaseUrl(headers?: HeaderStore) {
+  if (process.env.LIEKAN_PUBLIC_URL) {
+    const configured = new URL(process.env.LIEKAN_PUBLIC_URL);
+    if (
+      !['http:', 'https:'].includes(configured.protocol) ||
+      configured.username ||
+      configured.password
+    )
+      throw new Error('LIEKAN_PUBLIC_URL must be an HTTP(S) origin without credentials');
+    return new URL(configured.origin);
+  }
+
   const host =
     getFirstHeaderValue(headers?.get('x-forwarded-host')) ||
     getFirstHeaderValue(headers?.get('host'));

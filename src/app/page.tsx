@@ -1,21 +1,10 @@
-'use client';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { LAST_TEAM_CONFIG } from '@/lib/constants';
-import { getItem } from '@/lib/storage';
+import type { Metadata } from 'next';
+import { liekanProduct } from '@/lib/liekan/contracts/product';
+import RootPage from './RootPage';
 
-export default function RootPage() {
-  const router = useRouter();
+export default RootPage;
 
-  useEffect(() => {
-    const lastTeam = getItem(LAST_TEAM_CONFIG);
-
-    if (lastTeam) {
-      router.replace(`/teams/${lastTeam}/websites`);
-    } else {
-      router.replace(`/websites`);
-    }
-  }, [router]);
-
-  return null;
-}
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+  openGraph: { url: '/', siteName: liekanProduct.name, type: 'website' },
+};

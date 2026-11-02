@@ -1,6 +1,27 @@
-import { expect, test } from 'vitest';
+import { afterEach, expect, test, vi } from 'vitest';
 import { HOMEPAGE_URL } from './constants';
 import { getBaseUrl } from './get-base-url';
+
+afterEach(() => vi.unstubAllEnvs());
+
+test('configured public origin takes precedence over an old deployment host', () => {
+  vi.stubEnv('LIEKAN_PUBLIC_URL', 'https://geo.hong1234.com/');
+  expect(getBaseUrl(createHeaders({ host: 'geoinflow.vercel.app' })).href).toBe(
+    'https://geo.hong1234.com/',
+  );
+});
+
+test('configured public origin works without request headers', () => {
+  vi.stubEnv('LIEKAN_PUBLIC_URL', 'https://geo.hong1234.com');
+  expect(getBaseUrl().href).toBe('https://geo.hong1234.com/');
+});
+
+test('rejects non-HTTP public URLs and embedded credentials', () => {
+  for (const value of ['javascript:alert(1)', 'https://user:password@example.com']) {
+    vi.stubEnv('LIEKAN_PUBLIC_URL', value);
+    expect(() => getBaseUrl()).toThrow('LIEKAN_PUBLIC_URL');
+  }
+});
 
 function createHeaders(entries: Record<string, string>) {
   return {
