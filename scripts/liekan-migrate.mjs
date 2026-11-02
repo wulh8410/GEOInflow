@@ -8,6 +8,9 @@ import { PrismaClient } from '../generated/prisma/client.js';
 import { assertUpstreamMigrations, assertUpstreamSchema } from './liekan-schema-check.mjs';
 
 const lockTimeoutSql = "SET LOCAL lock_timeout TO '2s'";
+const migrationTimeout = Number(process.env.LIEKAN_MIGRATION_TIMEOUT_MS || 60000);
+if (!Number.isSafeInteger(migrationTimeout) || migrationTimeout < 60000 || migrationTimeout > 1800000)
+  throw new Error('LIEKAN_MIGRATION_TIMEOUT_MS must be between 60000 and 1800000');
 
 const client = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
@@ -52,7 +55,7 @@ try {
         console.log(`Liekan migration applied: ${name}`);
       }
     },
-    { timeout: 60000 },
+    { timeout: migrationTimeout },
   );
 } finally {
   await client.$disconnect();

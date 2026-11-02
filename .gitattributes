@@ -1,0 +1,2 @@
+*.sql text eol=lf
+scripts/liekan-demo-data/catalog.json text eol=lf
