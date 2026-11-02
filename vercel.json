@@ -1,4 +1,19 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "npx --yes pnpm@12.3.4 install --frozen-lockfile"
+  "daemons": {
+    "log-worker": {
+      "root": ".",
+      "entrypoint": "Dockerfile.vercel",
+      "command": ["node", "dist/liekan-worker.mjs"],
+      "instances": {"iad1": 0},
+      "resources": {"requests": {"memory": "1Gi"}}
+    },
+    "analytics-worker": {
+      "root": ".",
+      "entrypoint": "Dockerfile.vercel",
+      "command": ["node", "dist/liekan-analytics-worker.mjs"],
+      "instances": {"iad1": 0},
+      "resources": {"requests": {"memory": "1Gi"}}
+    }
+  }
 }
