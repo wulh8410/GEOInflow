@@ -13,10 +13,12 @@ const steps = [
   ['scripts/check-db.js'],
   ['scripts/liekan-schema-check.mjs'],
   ['scripts/liekan-migrate.mjs'],
-  ['scripts/liekan-seed-demo.mjs', '--automatic'],
   ['scripts/liekan-queue-bootstrap.mjs'],
   ['scripts/update-tracker.js'],
 ];
+if (process.argv.includes('--seed-demo')) {
+  steps.splice(4, 0, ['scripts/liekan-seed-demo.mjs', '--automatic']);
+}
 for (const args of steps) {
   const result = spawnSync(process.execPath, args, { stdio: 'inherit', env: process.env });
   if (result.error || result.status !== 0) {

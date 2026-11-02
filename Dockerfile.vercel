@@ -11,6 +11,8 @@ RUN pnpm install --frozen-lockfile --store-dir=/pnpm/store --network-concurrency
 FROM dependencies AS builder
 COPY . .
 COPY docker/proxy.ts ./src/proxy.ts
+# Vercel may omit the ignore file from its uploaded build context.
+RUN test -f .gitignore || printf 'node_modules/\n.next/\n' > .gitignore
 ENV DATABASE_URL=postgresql://user:pass@localhost:5432/dummy
 ENV NEXT_TELEMETRY_DISABLED=1
 ARG SKIP_BUILD_GEO
