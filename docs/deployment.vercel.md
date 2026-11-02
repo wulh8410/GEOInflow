@@ -21,6 +21,8 @@ The bundled city database remains in the image. Managed filesystem-based geograp
 
 ## Verification status
 
+When initializing a distant cloud database from a local machine, set `LIEKAN_MIGRATION_TIMEOUT_MS=1800000` for the one-time release operation if network round trips exceed the default 60-second transaction budget. The lock timeout remains two seconds, and all product migrations still commit atomically or roll back together. Prefer running releases near the database.
+
 Configuration syntax and the release preflight can be checked locally. A successful Vercel deployment, external-database release run, enabled-worker processing, trusted-IP behavior and real event/log ingestion must all be verified before declaring production monitoring complete.
 
 References: https://vercel.com/docs/functions/runtimes/container and https://vercel.com/docs/daemons/config-reference.
